@@ -15,7 +15,7 @@ body {
 <img src="gree.jpg" alt="Trulli" width="252" height="200">
 
 
-     <div id="boombox">
+    <div id="boombox">
       <div class="boombox-handle"></div>
 
       <div class="boombox-body">
@@ -59,7 +59,7 @@ body {
         </section>
 
         <section class="tape">
-          <audio src="52 hearts.mp3" crossorigin="anonymous"></audio>
+          <audio src="outfoxing.mp3" crossorigin="anonymous"></audio>
 
           <!-- 			type="audio/mpeg" -->
 
@@ -127,6 +127,41 @@ body {
         },
         false
       );
+
+      function init() {
+        audioCtx = new AudioContext();
+        track = new MediaElementAudioSourceNode(audioCtx, {
+          mediaElement: audioElement,
+        });
+
+        // Create the node that controls the volume.
+        const gainNode = new GainNode(audioCtx);
+
+        const volumeControl = document.querySelector('[data-action="volume"]');
+        volumeControl.addEventListener(
+          "input",
+          () => {
+            gainNode.gain.value = volumeControl.value;
+          },
+          false
+        );
+
+        // Create the node that controls the panning
+        const panner = new StereoPannerNode(audioCtx, { pan: 0 });
+
+        const pannerControl = document.querySelector('[data-action="panner"]');
+        pannerControl.addEventListener(
+          "input",
+          () => {
+            panner.pan.value = pannerControl.value;
+          },
+          false
+        );
+
+        // connect our graph
+        track.connect(gainNode).connect(panner).connect(audioCtx.destination);
+      }
+
 
 </body>
 </html>
